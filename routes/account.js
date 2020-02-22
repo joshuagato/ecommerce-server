@@ -51,7 +51,9 @@ router.route('/profile')
         if (err) return next(err);
 
         let token = jwt.sign({ user: user }, config.secret, { expiresIn: '7d' });
-        res.json({ success: true, message: 'Successful.', token: token, user: user });
+        res.json({ success: true, message: 'Successful.', token: token,
+            user: { name: user.name, email: user.email, isSeller: user.isSeller }
+        });
     });
 })
 .post(checkJWT, (req, res, next) => {
