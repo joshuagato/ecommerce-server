@@ -40,7 +40,7 @@ const fileFilter = (req, file, cb) => {
         cb(null, false);
 }
 
-
+// Making the product_pictures folder accessible
 app.use('/product_pictures', express.static(path.join(__dirname, 'product_pictures')));
 app.use(multer({ storage: storage, fileFilter: fileFilter }).single('product_picture'));
 
