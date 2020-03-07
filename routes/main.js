@@ -3,6 +3,8 @@ const async = require('async');
 
 const Category = require('../models/category');
 const Product = require('../models/product');
+const Review = require('../models/review');
+const checkJWT = require('../middlewares/check-jwt');
 
 router.route('/categories')
 .get((req, res, next) => {
@@ -33,7 +35,7 @@ router.get('/categories/:id', (req, res, next) => {
     },
     function(callback) {
       Product.find({ category: req.params.id }).skip(perPage * page).limit(perPage)
-      .populate('category').populate('owner').exec((err, products) => {
+      .populate('category').populate('owner').populate('review').exec((err, products) => {
         if (err) return next(err);
         callback(err, products);
       });
@@ -88,13 +90,37 @@ router.get('/products', (req, res, next) => {
 });
 
 router.get('/products/:id', (req, res, next) => {
-  Product.findById({ _id: req.params.id }).populate('category').populate('owner')
+  Product.findById({ _id: req.params.id }).populate('category').populate('owner').deepPopulate('reviews.owner')
   .exec((err, product) => {
     if (err) res.json({ success: false, message: 'Product not found.' });
-    else {
+    else
       if (product) res.json({ success: true, product: product });
-    }
   })
-})
+});
+
+router.post('/review', checkJWT, (req, res, next) => {
+  async.waterfall([
+    function(callback) {
+      Product.findOne({ _id: req.body.productId }, (err, product) => {
+        if (product) callback(err, product);
+      });
+    },
+    function(product) {
+      let review = new Review();
+
+      review.owner = req.decoded.user._id;
+
+      if (req.body.title) review.title = req.body.title;
+      if (req.body.description) review.description = req.body.description;
+      review.rating = req.body.rating;
+
+      product.reviews.push(review._id);
+      product.save();
+      review.save();
+      res.json({ success: true, message: 'Successful added the review.' });
+    }
+  ]);
+});
+
 
 module.exports = router;
