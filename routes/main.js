@@ -21,7 +21,7 @@ router.route('/categories')
 
 
 router.get('/categories/:id', (req, res, next) => {
-  const perPage = 10;
+  const perPage = 2;
   const page = req.query.page;
 
   async.parallel([
@@ -87,7 +87,7 @@ router.get('/products', (req, res, next) => {
   });
 });
 
-router.get('/product/:id', (req, res, next) => {
+router.get('/products/:id', (req, res, next) => {
   Product.findById({ _id: req.params.id }).populate('category').populate('owner')
   .exec((err, product) => {
     if (err) res.json({ success: false, message: 'Product not found.' });

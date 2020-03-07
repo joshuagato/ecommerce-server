@@ -17,27 +17,27 @@ app.use(morgan('dev'));
 app.use(cors());
 
 app.get('/', (req, res, next) => {
-    res.json({
-        user: "Joshua Gato"
-    });
+  res.json({
+    user: "Joshua Gato"
+  });
 });
 
 const uuid = uuid4();
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'product_pictures');
-    },
-    filename: (req, file, cb) => {
-        cb(null, uuid + '-' + file.originalname);
-    }
+  destination: (req, file, cb) => {
+    cb(null, 'product_pictures');
+  },
+  filename: (req, file, cb) => {
+    cb(null, uuid + '-' + file.originalname);
+  }
 });
 
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg')
-        cb(null, true);
-    else
-        cb(null, false);
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg')
+    cb(null, true);
+  else
+    cb(null, false);
 }
 
 // Making the product_pictures folder accessible
@@ -46,11 +46,11 @@ app.use(multer({ storage: storage, fileFilter: fileFilter }).single('product_pic
 
 
 mongoose.connect(config.database, err => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("Connected to the database");
-    }
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("Connected to the database");
+  }
 });
 
 
@@ -63,5 +63,5 @@ app.use('/api/accounts', userRoutes);
 app.use('/api/seller', sellerRoutes);
 
 app.listen(config.port, err => {
-    console.log('Magic happens on port ' + config.port);
+  console.log('Magic happens on port ' + config.port);
 });
