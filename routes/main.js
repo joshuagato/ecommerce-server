@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 const router = require('express').Router();
 const async = require('async');
 
@@ -9,10 +10,10 @@ const checkJWT = require('../middlewares/check-jwt');
 router.route('/categories')
 .get((req, res, next) => {
   Category.find({}, (err, categories) => {
-    res.json({ success: true, message: 'Successful.', categories: categories })
-  })
+    res.json({ success: true, message: 'Successful.', categories: categories });
+  });
 })
-.post((req,res, next) => {
+.post((req, res, next) => {
   let category = new Category();
 
   category.name = req.body.category;
@@ -21,91 +22,94 @@ router.route('/categories')
   res.json({ success: true, message: 'Successful added new category.' });
 });
 
-
 router.get('/categories/:id', (req, res, next) => {
   const perPage = 2;
   const page = req.query.page;
 
   async.parallel([
-    function(callback) {
+    function (callback) {
       Product.count({ category: req.params.id }, (err, count) => {
         const totalProducts = count;
         callback(err, totalProducts);
       });
     },
-    function(callback) {
+
+    function (callback) {
       Product.find({ category: req.params.id }).skip(perPage * page).limit(perPage)
       .populate('category').populate('owner').populate('review').exec((err, products) => {
         if (err) return next(err);
         callback(err, products);
       });
     },
-    function(callback) {
+
+    function (callback) {
       Category.findOne({ _id: req.params.id }, (err, category) => {
         callback(err, category);
       });
-    }
+    },
   ],
-  function(err, results) {
+  function (err, results) {
     const totalProducts = results[0];
     const products = results[1];
     const category = results[2];
 
     res.json({
       success: true, message: 'category', products: products, categoryName: category.name,
-      totalProducts: totalProducts, pages: Math.ceil(totalProducts / perPage)
+      totalProducts: totalProducts, pages: Math.ceil(totalProducts / perPage),
     });
   });
 });
-
 
 router.get('/products', (req, res, next) => {
   const perPage = 10;
   const page = req.query.page;
 
   async.parallel([
-    function(callback) {
+    function (callback) {
       Product.count({}, (err, count) => {
         const totalProducts = count;
         callback(err, totalProducts);
       });
     },
-    function(callback) {
+
+    function (callback) {
       Product.find({}).skip(perPage * page).limit(perPage)
       .populate('category').populate('owner').exec((err, products) => {
         if (err) return next(err);
         callback(err, products);
       });
-    }
+    },
   ],
-  function(err, results) {
+
+  function (err, results) {
     const totalProducts = results[0];
     const products = results[1];
 
     res.json({
       success: true, message: 'category', products: products,
-      totalProducts: totalProducts, pages: Math.ceil(totalProducts / perPage)
+      totalProducts: totalProducts, pages: Math.ceil(totalProducts / perPage),
     });
   });
 });
 
 router.get('/products/:id', (req, res, next) => {
-  Product.findById({ _id: req.params.id }).populate('category').populate('owner').deepPopulate('reviews.owner')
-  .exec((err, product) => {
+  Product.findById({ _id: req.params.id }).populate('category').populate('owner')
+  .deepPopulate('reviews.owner').exec((err, product) => {
     if (err) res.json({ success: false, message: 'Product not found.' });
     else
       if (product) res.json({ success: true, product: product });
-  })
+  });
 });
 
 router.post('/review', checkJWT, (req, res, next) => {
   async.waterfall([
-    function(callback) {
+    function (callback) {
       Product.findOne({ _id: req.body.productId }, (err, product) => {
         if (product) callback(err, product);
       });
     },
-    function(product) {
+
+    function (product) {
       let review = new Review();
 
       review.owner = req.decoded.user._id;
@@ -118,9 +122,8 @@ router.post('/review', checkJWT, (req, res, next) => {
       product.save();
       review.save();
       res.json({ success: true, message: 'Successful added the review.' });
-    }
+    },
   ]);
 });
-
 
 module.exports = router;

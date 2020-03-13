@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 
@@ -15,7 +16,8 @@ router.post('/signup', (req, res, next) => {
   user.isSeller = req.body.isSeller;
 
   User.findOne({ email: req.body.email }, (err, existingUser) => {
-    if (existingUser) res.json({ success: false, message: 'An account with this email already exists.' });
+    if (existingUser)
+      res.json({ success: false, message: 'An account with this email already exists.' });
     else {
       user.save();
 
@@ -33,7 +35,8 @@ router.post('/login', (req, res, next) => {
     else if (user) {
       let validPassword = user.comparePassword(req.body.password);
 
-      if (!validPassword) res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+      if (!validPassword)
+        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
       else {
         let token = jwt.sign({ user: user }, config.secret, { expiresIn: '7d' });
         res.json({ success: true, message: 'Login Successful', token: token });
@@ -52,7 +55,7 @@ router.route('/profile')
 
     let token = jwt.sign({ user: user }, config.secret, { expiresIn: '7d' });
     res.json({ success: true, message: 'Successful.', token: token,
-        user: { name: user.name, email: user.email, isSeller: user.isSeller }
+      user: { name: user.name, email: user.email, isSeller: user.isSeller },
     });
   });
 })
@@ -82,17 +85,17 @@ router.route('/address')
 })
 .post(checkJWT, (req, res, next) => {
   User.findOne({ _id: req.decoded.user._id }, (err, user) => {
-  if (err) return next(err);
+    if (err) return next(err);
 
-  if (req.body.addr1) user.address.addr1 = req.body.addr1;
-  if (req.body.addr2) user.address.addr2 = req.body.addr2;
-  if (req.body.city) user.address.city = req.body.city;
-  if (req.body.state) user.address.state = req.body.state;
-  if (req.body.country) user.address.country = req.body.country;
-  if (req.body.postalCode) user.address.postalCode = req.body.postalCode;
+    if (req.body.addr1) user.address.addr1 = req.body.addr1;
+    if (req.body.addr2) user.address.addr2 = req.body.addr2;
+    if (req.body.city) user.address.city = req.body.city;
+    if (req.body.state) user.address.state = req.body.state;
+    if (req.body.country) user.address.country = req.body.country;
+    if (req.body.postalCode) user.address.postalCode = req.body.postalCode;
 
-  user.save();
-  res.json({ success: true, message: 'Successfully edited your addresss.' });
+    user.save();
+    res.json({ success: true, message: 'Successfully edited your addresss.' });
   });
 });
 

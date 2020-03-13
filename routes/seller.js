@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 const router = require('express').Router();
 const Product = require('../models/product');
 
@@ -8,7 +9,7 @@ router.route('/products')
   Product.find({ owner: req.decoded.user._id })
   .populate('owner').populate('category').exec((err, products) => {
     if (products) res.json({ success: true, message: 'Products', products: products });
-  })
+  });
 })
 .post(checkJWT, (req, res, next) => {
   let product = new Product();
