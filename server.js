@@ -17,9 +17,7 @@ app.use(morgan('dev'));
 app.use(cors());
 
 app.get('/', (req, res, next) => {
-  res.json({
-    user: "Joshua Gato"
-  });
+  res.json({ user: "Joshua Gato" });
 });
 
 const uuid = uuid4();
