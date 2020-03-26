@@ -17,8 +17,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 app.use(cors());
 
-app.get('/', (req, res, next) => {
-  res.json({ user: "Joshua Gato" });
+// app.get('/', (req, res, next) => {
+//   res.json({ user: "Joshua Gato" });
+// });
+
+app.get('/', (req, res) => {
+    res.send('Hello World ' + process.env.DB_CONNECTION2 + ' ' + process.env.PORT);
 });
 
 const uuid = uuid4();
