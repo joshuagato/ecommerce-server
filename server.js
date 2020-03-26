@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
@@ -43,7 +44,7 @@ app.use('/product_pictures', express.static(path.join(__dirname, 'product_pictur
 app.use(multer({ storage: storage, fileFilter: fileFilter }).single('product_picture'));
 
 
-mongoose.connect(config.database, err => {
+mongoose.connect(process.env.PORT || config.database, err => {
   if (err) console.log(err);
   else console.log("Connected to the database");
 });

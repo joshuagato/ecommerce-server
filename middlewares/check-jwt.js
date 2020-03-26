@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
-
 module.exports = function(req, res, next) {
     let token = req.headers['authorization'];
 
@@ -15,9 +14,6 @@ module.exports = function(req, res, next) {
             }
         });
     } else {
-        res.status(403).json({
-            success: false,
-            message: 'No token provided.'
-        });
+        res.status(403).json({ success: false, message: 'No token provided.' });
     }
 };

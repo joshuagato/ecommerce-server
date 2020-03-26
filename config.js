@@ -1,5 +1,5 @@
 module.exports = {
-  database: 'mongodb://127.0.0.1:27017/amazon',
-  port: '4040',
-  secret: 'amazonwebapp'
+    database: process.env.DB_CONNECTION,
+    port: process.env.DEVPORT,
+    secret: process.env.SECRET,
 }
