@@ -23,7 +23,7 @@ router.route('/categories')
 });
 
 router.get('/categories/:id', (req, res, next) => {
-  const perPage = 2;
+  const perPage = 5;
   const page = req.query.page;
 
   async.parallel([
@@ -61,7 +61,7 @@ router.get('/categories/:id', (req, res, next) => {
 });
 
 router.get('/products', (req, res, next) => {
-  const perPage = 5;
+  const perPage = 8;
   const page = req.query.page;
 
   async.parallel([
