@@ -48,7 +48,7 @@ app.use('/product_pictures', express.static(path.join(__dirname, 'product_pictur
 app.use(multer({ storage: storage, fileFilter: fileFilter }).single('product_picture'));
 
 
-mongoose.connect(process.env.PORT || config.database, err => {
+mongoose.connect(config.database, err => {
   if (err) console.log(err);
   else console.log("Connected to the database");
 });
@@ -62,6 +62,6 @@ app.use('/api', mainRoutes);
 app.use('/api/accounts', userRoutes);
 app.use('/api/seller', sellerRoutes);
 
-app.listen(config.port, err => {
+app.listen(process.env.PORT || config.port, err => {
   console.log('Magic happens on port ' + config.port);
 });
