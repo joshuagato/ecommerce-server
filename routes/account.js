@@ -9,11 +9,11 @@ const checkJWT = require('../middlewares/check-jwt');
 router.post('/signup', (req, res, next) => {
   let user = new User();
 
-  user.name = req.body.name;
+    user.name = req.body.name;
   user.email = req.body.email;
+  user.isAnAdmin = req.body.isAnAdmin;
   user.password = req.body.password;
   user.picture = user.gravatar();
-  user.isSeller = req.body.isSeller;
 
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (existingUser)
@@ -55,7 +55,7 @@ router.route('/profile')
 
     let token = jwt.sign({ user: user }, config.secret, { expiresIn: '7d' });
     res.json({ success: true, message: 'Successful.', token: token,
-      user: { name: user.name, email: user.email, isSeller: user.isSeller },
+      user: { name: user.name, email: user.email, isAnAdmin: user.isAnAdmin },
     });
   });
 })
@@ -67,7 +67,7 @@ router.route('/profile')
     if (req.body.email) user.email = req.body.email;
     if (req.body.password) user.password = req.body.password;
 
-    user.isSeller = req.body.isSeller;
+    user.isAnAdmin = req.body.isAnAdmin;
     user.save();
 
     let token = jwt.sign({ user: user }, config.secret, { expiresIn: '7d' });

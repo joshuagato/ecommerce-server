@@ -9,7 +9,7 @@ const UserSchema = new Schema({
     name: String,
     password: String,
     picture: String,
-    isSeller: { type: Boolean, default: false },
+    isAnAdmin: { type: Boolean, default: false, required: true },
     address: {
         addr1: String,
         addr2: String,
